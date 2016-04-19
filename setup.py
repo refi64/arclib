@@ -8,6 +8,7 @@ setup(name='arclib',
       description="A unified API for accessing Python's compression formats",
       long_description=descr,
       author='Ryan Gonzalez',
+      author_email='rymg19@gmail.com',
       url='https://github.com/kirbyfan64/arclib',
       packages=['arclib'],
       classifiers=[

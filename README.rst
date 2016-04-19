@@ -10,3 +10,9 @@ particular, it provides the following APIs:
   decompression.
 - Complex: For zip and tar. Supports accessing the various members and their
   respective information.
+
+Links
+*****
+
+- `PyPI <https://pypi.python.org/pypi/arclib>`_
+- `Docs <http://arclib.readthedocs.org/en/latest/>`_

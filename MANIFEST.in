@@ -1,0 +1,4 @@
+include README.rst
+recursive-include docs source/*
+prune docs/build
+recursive-include tests *.py

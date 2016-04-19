@@ -43,6 +43,14 @@ compressing and decompressing data. However, all of them have different APIs for
 working with them., leading to difficulty in attempting to support multiple
 archive formats. arclib is an attempt to fix this by providing a common API that
 bridges the various archive modules in Python.</p>
+<div class="section" id="rationale">
+<h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
+<p>A while back, I was trying to port a Python application from using zip files to
+using tar files. To say it was &#8220;painful&#8221; is an understatement. The two modules
+have conceptually similar but immensely different APIs. Therefore, I started work
+on arclib to provide a unified API between the two, as well as between the other
+archive modules in the standard library.</p>
+</div>
 <div class="section" id="archive-categories">
 <h2>Archive categories<a class="headerlink" href="#archive-categories" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal"><span class="pre">arclib</span></code> divides Python&#8217;s five archive modules (<a class="reference external" href="https://docs.python.org/3/library/zipfile.html">zipfile</a>, <a class="reference external" href="https://docs.python.org/3/library/tarfile.html">tarfile</a>, <a class="reference external" href="https://docs.python.org/3/library/lzma.html">lzma</a>,
@@ -88,10 +96,7 @@ of their respective complex archive formats.</p>
 <dl class="function">
 <dt id="open">
 <code class="descname">open</code><span class="sig-paren">(</span><em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a <code class="docutils literal"><span class="pre">File</span></code> with the given arguments. Each module&#8217;s <code class="docutils literal"><span class="pre">open</span></code> function
-is an alias for it&#8217;s corresponding Python module&#8217;s <code class="docutils literal"><span class="pre">open</span></code> and therefore
-returns the module&#8217;s <code class="docutils literal"><span class="pre">File</span></code>. For instance, <code class="docutils literal"><span class="pre">arclib.gz.open</span></code> is an alias
-for Python&#8217;s own <code class="docutils literal"><span class="pre">gzip.open</span></code> and returns <code class="docutils literal"><span class="pre">gzip.GzipFile</span></code>.</p>
+<dd><p>Returns a <code class="docutils literal"><span class="pre">File</span></code> with the given arguments.</p>
 </dd></dl>
 
 </div>
@@ -110,7 +115,9 @@ for Python&#8217;s own <code class="docutils literal"><span class="pre">gzip.ope
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; The data to compress.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns bytes:</th><td class="field-body">The compressed data.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The compressed data.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bytes</td>
 </tr>
 </tbody>
 </table>
@@ -126,13 +133,18 @@ for Python&#8217;s own <code class="docutils literal"><span class="pre">gzip.ope
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; The data to decompress.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns bytes:</th><td class="field-body">The decompressed data.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The decompressed data.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bytes</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<p>In addition, their <code class="docutils literal"><span class="pre">open</span></code> function is the same as the base API.</p>
+<p>In addition, their <code class="docutils literal"><span class="pre">open</span></code> function is an alias for the corresponding Python
+module&#8217;s <code class="docutils literal"><span class="pre">open</span></code> and therefore returns the module&#8217;s <code class="docutils literal"><span class="pre">File</span></code>. For instance,
+<code class="docutils literal"><span class="pre">arclib.gz.open</span></code> is an alias for Python&#8217;s own <code class="docutils literal"><span class="pre">gzip.open</span></code> and returns
+<code class="docutils literal"><span class="pre">gzip.GzipFile</span></code>.</p>
 </div>
 <div class="section" id="basic-incremental">
 <h3>Basic, incremental<a class="headerlink" href="#basic-incremental" title="Permalink to this headline">¶</a></h3>
@@ -159,10 +171,12 @@ instances of <code class="docutils literal"><span class="pre">arclib.AbstractBas
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; The data to compress.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns bytes:</th><td class="field-body">A portion of compressed data, or an empty byte string. Note
-that this data is <strong>not</strong> considered valid on its own, and
-must be combined with both other calls to <code class="docutils literal"><span class="pre">compress</span></code> and
-the result of :py:method:flush.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A portion of compressed data, or an empty byte string. Note that
+this data is <strong>not</strong> considered valid on its own, and must be
+combined with both other calls to <code class="docutils literal"><span class="pre">compress</span></code> and the result of
+<a class="reference internal" href="#Compressor.flush" title="Compressor.flush"><code class="xref py py-meth docutils literal"><span class="pre">flush()</span></code></a>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bytes</td>
 </tr>
 </tbody>
 </table>
@@ -176,7 +190,9 @@ the result of :py:method:flush.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns bytes:</th><td class="field-body">The rest of the compressed data.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The rest of the compressed data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bytes</td>
 </tr>
 </tbody>
 </table>
@@ -211,10 +227,11 @@ method.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>bytes</em>) &#8211; The data to decompress.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns bytes:</th><td class="field-body">A portion of decompressed data, or an empty byte string.
-Note that this data is <strong>not</strong> the complete decompressed
-data, and must be combined with other calls to
-<code class="docutils literal"><span class="pre">decompress</span></code>.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A portion of decompressed data, or an empty byte string. Note that
+this data is <strong>not</strong> the complete decompressed  data, and must b
+combined with other calls to <code class="docutils literal"><span class="pre">decompress</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bytes</td>
 </tr>
 </tbody>
 </table>
@@ -235,6 +252,207 @@ data, and must be combined with other calls to
 </dd></dl>
 
 </div>
+<div class="section" id="complex">
+<h3>Complex<a class="headerlink" href="#complex" title="Permalink to this headline">¶</a></h3>
+<p>Both arclib.zip and arclib.tar implement this API.</p>
+<dl class="function">
+<dt>
+<code class="descname">open</code><span class="sig-paren">(</span><em>*args</em>, <em>**kw</em><span class="sig-paren">)</span></dt>
+<dd><p>Opens an archive. All arguments are passed to the corresponding function; for
+instance, <code class="docutils literal"><span class="pre">arclib.zip.open</span></code> passes all its arguments to <code class="docutils literal"><span class="pre">zipfile.open</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The opened archive file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#File" title="File"><code class="xref py py-class docutils literal"><span class="pre">File</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="File">
+<em class="property">class </em><code class="descname">File</code><a class="headerlink" href="#File" title="Permalink to this definition">¶</a></dt>
+<dd><p>An opened archive file. Can be used as a context manager. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">arclib.zip</span>
+
+<span class="k">with</span> <span class="n">arclib</span><span class="o">.</span><span class="n">zip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;myfile.zip&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="c"># Stuff here.</span>
+<span class="c"># f is automatically closed.</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="File.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#File.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the archive file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="File.info_for">
+<code class="descname">info_for</code><span class="sig-paren">(</span><em>member</em><span class="sig-paren">)</span><a class="headerlink" href="#File.info_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <a class="reference internal" href="#Info" title="Info"><code class="xref py py-class docutils literal"><span class="pre">Info</span></code></a> object containing information about the given
+archive member.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>member</strong> (<em>str</em>) &#8211; A string describing the path to the archive member, e.g.
+<code class="docutils literal"><span class="pre">x/y/z</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The member information object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#Info" title="Info"><code class="xref py py-class docutils literal"><span class="pre">Info</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="File.all_info">
+<code class="descname">all_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#File.all_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves <a class="reference internal" href="#Info" title="Info"><code class="xref py py-class docutils literal"><span class="pre">Info</span></code></a> objects for all the archive&#8217;s members.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of all the <a class="reference internal" href="#Info" title="Info"><code class="xref py py-class docutils literal"><span class="pre">Info</span></code></a> objects for all the archive&#8217;s
+members.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of <a class="reference internal" href="#Info" title="Info"><code class="xref py py-class docutils literal"><span class="pre">Info</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="File.members">
+<code class="descname">members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#File.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all the archive&#8217;s members.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of strings, one for each archive member.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list of str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="File.dump">
+<code class="descname">dump</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#File.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump a description archive&#8217;s contents to standard output.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="File.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>path</em>, <em>arcname=None</em>, <em>recursive=True</em><span class="sig-paren">)</span><a class="headerlink" href="#File.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a file or directory to the archive.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> (<em>str</em>) &#8211; The path to add to the archive.</li>
+<li><strong>arcname</strong> (<em>str</em>) &#8211; The name to give the file when placing it in the
+archive. If <code class="docutils literal"><span class="pre">None</span></code>, then it will be the same as
+<em>path</em>, but with leading roots and the drive removed.</li>
+<li><strong>recursive</strong> (<em>bool</em>) &#8211; If <em>path</em> is a directory and this is a truthy value,
+then the directory&#8217;s contents will also be added to
+the archive.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="File.add_data">
+<code class="descname">add_data</code><span class="sig-paren">(</span><em>path</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#File.add_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a <code class="docutils literal"><span class="pre">bytes</span></code> object to the archive.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> (<em>str</em>) &#8211; The name to give the file when placing it in the archive.</li>
+<li><strong>data</strong> (<em>bytes</em>) &#8211; The file&#8217;s contents.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="File.extract">
+<code class="descname">extract</code><span class="sig-paren">(</span><em>member</em>, <em>path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#File.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts a member from the archive.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>member</strong> (<em>str</em>) &#8211; The member to extract.</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; The target path to extract the member to; if <code class="docutils literal"><span class="pre">None</span></code>, then
+it will be the current directory.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal"><span class="pre">arclib.zip.File.extract</span></code> also takes the following keyword argument:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pwd</strong> (<em>str</em>) &#8211; The password to use to extract the file, or <code class="docutils literal"><span class="pre">None</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="Info">
+<em class="property">class </em><code class="descname">Info</code><a class="headerlink" href="#Info" title="Permalink to this definition">¶</a></dt>
+<dd><p>An object containing information about an archive member.</p>
+<dl class="attribute">
+<dt id="Info.info">
+<code class="descname">info</code><a class="headerlink" href="#Info.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>The underlying, &#8220;true&#8221; info object. With <code class="docutils literal"><span class="pre">arclib.zip.Info</span></code>, this is an
+instance of <code class="docutils literal"><span class="pre">zipfile.ZipInfo</span></code>; with <code class="docutils literal"><span class="pre">arclib.tar.Info</span></code>, this is an
+instance of <code class="docutils literal"><span class="pre">tarfile.TarInfo</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Info.filename">
+<code class="descname">filename</code><a class="headerlink" href="#Info.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the file within the archive.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Info.size">
+<code class="descname">size</code><a class="headerlink" href="#Info.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of bytes that the file takes up within the archive.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Info.mtime">
+<code class="descname">mtime</code><a class="headerlink" href="#Info.mtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <code class="docutils literal"><span class="pre">datetime.datetime</span></code> object containing the last modification time of the
+file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 </div>
 
@@ -247,6 +465,7 @@ data, and must be combined with other calls to
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">arclib</a><ul>
+<li><a class="reference internal" href="#rationale">Rationale</a></li>
 <li><a class="reference internal" href="#archive-categories">Archive categories</a></li>
 <li><a class="reference internal" href="#modules">Modules</a><ul>
 <li><a class="reference internal" href="#basic-compression-decompression">Basic compression/decompression</a></li>
@@ -257,6 +476,7 @@ data, and must be combined with other calls to
 <li><a class="reference internal" href="#base">Base</a></li>
 <li><a class="reference internal" href="#basic-one-shot">Basic, one-shot</a></li>
 <li><a class="reference internal" href="#basic-incremental">Basic, incremental</a></li>
+<li><a class="reference internal" href="#complex">Complex</a></li>
 </ul>
 </li>
 </ul>

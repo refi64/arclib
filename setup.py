@@ -14,5 +14,6 @@ setup(name='arclib',
       classifiers=[
           'Programming Language :: Python :: 3 :: Only',
           'Topic :: System :: Archiving',
+          'License :: OSI Approved :: MIT License',
       ],
 )

@@ -294,6 +294,8 @@ Both arclib.zip and arclib.tar implement this API.
       ``arclib.zip.File.extract`` also takes the following keyword argument:
 
       :param str pwd: The password to use to extract the file, or ``None``.
+      :return: The file-like object as explained above, if the member is present. If it
+               is not present, returns ``None``.
 
 .. py:class:: Info
 

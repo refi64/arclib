@@ -72,8 +72,9 @@ class File(AbstractAdvancedFile):
         self.__tar.extractall('.' if path is None else path, members)
 
     def open(self, member, universal_newlines=False):
-        fp = self.__tar.extractfile(member)
-        if fp is None:
+        try:
+            fp = self.__tar.extractfile(member)
+        except KeyError:
             return None
 
         if universal_newlines:

@@ -1,6 +1,7 @@
 from . import AbstractAdvancedFile, AbstractMemberInfo
 from tarfile import is_tarfile as test, TarFile as _tfile, TarInfo as _info
 import datetime as _datetime, io as _io, time as _time
+from . import _rfile
 
 class Info(AbstractMemberInfo):
     _module = 'tar'
@@ -70,5 +71,18 @@ class File(AbstractAdvancedFile):
     def extract_all(self, path=None, members=None):
         self.__tar.extractall('.' if path is None else path, members)
 
+    def open(self, member, universal_newlines=False):
+        fp = self.__tar.extractfile(member)
+        if fp is None:
+            return None
+
+        if universal_newlines:
+            return _rfile.RTextFile(member, fp)
+        else:
+            return _rfile.RFile(member, fp)
+
 def open(*args, **kw):
     return File(_tfile.open(*args, **kw))
+
+def openobj(fileobj, **kw):
+    return File(_tfile.open(name=kw.pop('name', None), fileobj=fileobj, **kw))

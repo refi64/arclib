@@ -1,6 +1,7 @@
 from . import AbstractAdvancedFile, AbstractMemberInfo
 from zipfile import is_zipfile as test, ZipFile as _zfile, ZipInfo as _info
 import os as _os, datetime as _datetime
+from . import _rfile
 
 class Info(AbstractMemberInfo):
     _module = 'zip'
@@ -76,5 +77,19 @@ class File(AbstractAdvancedFile):
     def extract_all(self, path=None, members=None, *, pwd=None):
         self.__zip.extractall(path, members, pwd=pwd)
 
+    def open(self, member, universal_newlines=False, *, pwd=None):
+        try:
+            fp = self.__zip.open(member, pwd=pwd)
+        except KeyError:
+            return None
+
+        if universal_newlines:
+            return _rfile.RTextFile(member, fp)
+        else:
+            return _rfile.RFile(member, fp)
+
 def open(*args, **kw):
     return File(_zfile(*args, **kw))
+
+def openobj(fileobj, **kw):
+    return File(_zfile(fileobj, **kw))

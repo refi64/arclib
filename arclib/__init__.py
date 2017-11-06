@@ -73,3 +73,6 @@ class AbstractAdvancedFile(metaclass=_ABCMeta):
 
     @_uabstractmethod
     def extract_all(self, path=None, members=None, **kw): pass
+
+    @_uabstractmethod
+    def open(self, member, universal_newlines=False, **kw): pass

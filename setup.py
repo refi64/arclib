@@ -4,7 +4,7 @@ with open('README.rst') as f:
     descr = f.read()
 
 setup(name='arclib',
-      version='0.1',
+      version='0.2',
       description="A unified API for accessing Python's compression formats",
       long_description=descr,
       author='Ryan Gonzalez',
